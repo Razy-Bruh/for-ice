@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>For Ice 🤍</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+
+
+body{
+  min-height:100vh;
+  min-height:100dvh;
+  background:#000;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  color:white;
+}
+
+/* 💗 หัวใจพื้นหลัง */
+.bg-heart{
+  position:absolute;
+  color:white;
+  opacity:0.15;
+  animation:floatUp linear infinite;
+  text-shadow:0 0 8px rgba(255,255,255,0.6),
+              0 0 15px rgba(255,255,255,0.3);
+}
+
+@keyframes floatUp{
+  0%{
+    transform:translateY(110vh) translateX(0);
+  }
+  25%{
+    transform:translateY(75vh) translateX(-20px);
+  }
+  50%{
+    transform:translateY(50vh) translateX(20px);
+  }
+  75%{
+    transform:translateY(25vh) translateX(-15px);
+  }
+  100%{
+    transform:translateY(-10vh) translateX(10px);
+  }
+}
+
+/* 🌌 ดาวตก */
+.shooting-star{
+  position:absolute;
+  width:2px;
+  height:80px;
+  background:linear-gradient(white,transparent);
+  opacity:0.8;
+  transform:rotate(45deg);
+  animation:shoot 1.2s linear forwards;
+}
+
+@keyframes shoot{
+  from{
+    transform:translate(0,0) rotate(45deg);
+    opacity:1;
+  }
+  to{
+    transform:translate(-600px,600px) rotate(45deg);
+    opacity:0;
+  }
+}
+
+.container{
+  position:relative;
+  z-index:3;
+  transition:0.6s;
+  text-align:center;
+}
+
+.container.hide{
+  opacity:0;
+  pointer-events:none;
+}
+
+h1{
+  font-size:clamp(20px,5vw,28px);
+  margin-bottom:3vh;
+}
+
+button{
+  padding:12px 28px;
+  font-size:clamp(16px,4vw,18px);
+  border:1px solid white;
+  background:transparent;
+  color:white;
+  border-radius:50px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:active{transform:scale(0.95);}
+
+/* 💌 ซอง */
+.envelope{
+  position:fixed;
+  left:50%;
+  bottom:-120%;
+  transform:translate(-50%,0);
+  width:min(92vw,380px);
+  height:min(75vh,480px);
+  background:#111;
+  border:1px solid white;
+  transition:1s ease;
+  overflow:hidden;
+  border-radius:8px;
+  z-index:2;
+}
+
+.envelope.show{
+  bottom:50%;
+  transform:translate(-50%,50%);
+}
+
+.flap{
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:#111;
+  transform-origin:top;
+  transition:1s ease;
+  clip-path:polygon(0 0,100% 0,50% 45%);
+  border-top:1px solid white;
+}
+
+.envelope.open .flap{
+  transform:rotateX(180deg);
+}
+
+/* ✨ แสงพุ่ง */
+.flash{
+  position:absolute;
+  inset:0;
+  background:white;
+  opacity:0;
+  pointer-events:none;
+}
+
+.flash.active{
+  animation:flashAnim 0.8s ease;
+}
+
+@keyframes flashAnim{
+  0%{opacity:0;}
+  50%{opacity:0.9;}
+  100%{opacity:0;}
+}
+
+/* กระดาษ */
+.letter{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:100%;
+  background:white;
+  color:black;
+  padding:20px;
+  transform:translateY(100%);
+  transition:1s ease;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+.envelope.open .letter{
+  transform:translateY(0);
+}
+
+.image-wrap img{
+  width:100%;
+  border-radius:14px;
+}
+
+.letter-text{
+  font-size:clamp(14px,3.5vw,16px);
+  line-height:1.6;
+  min-height:60px;
+}
+
+/* 🎵 ซ่อน player */
+.music{
+  position:fixed;
+  width:0;
+  height:0;
+  overflow:hidden;
+}
+.image-wrap{
+  width:100%;
+}
+
+.image-wrap img{
+  width:100%;
+  height:auto;
+  display:block;
+  border-radius:14px;
+}
+
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>ก๊อกๆ มีอารายมาให้น้าาา🤍</h1>
+  <button onclick="openEnvelope()">เปิดจดหมาย</button>
+</div>
+
+<div id="envelope" class="envelope">
+  <div class="flash" id="flash"></div>
+  <div class="flap"></div>
+
+  <div class="letter">
+    <div class="image-wrap">
+      <img src="25690213_160445_329.jpg" alt="รูปของเรา">
+    </div>
+    <div class="letter-text" id="typedText"></div>
+  </div>
+</div>
+
+<div class="music">
+  <iframe id="ytplayer" allow="autoplay"></iframe>
+</div>
+
+<script>
+const message="วันนี้เป็นวันที่พิเศษมากสำหรับเรา ไผ่อยากจะบอกว่าไอซ์เป็นคนที่น่ารักและสำคัญมากในชีวิตของไผ่เลยนะ ไผ่ขอให้ไอซ์มีความสุขมากๆนะะรักไอซ์มากนะ 🤍";
+let index=0;
+
+/* 💗 สร้างหัวใจ */
+for(let i=0;i<35;i++){
+  const heart=document.createElement("div");
+  heart.className="bg-heart";
+  heart.innerHTML="🤍";
+  heart.style.left=Math.random()*100+"vw";
+  heart.style.fontSize=(15+Math.random()*25)+"px";
+  heart.style.animationDuration=(8+Math.random()*6)+"s";
+  heart.style.animationDelay=Math.random()*5+"s";
+  document.body.appendChild(heart);
+}
+
+/* 🌌 ดาวตกสุ่ม */
+setInterval(()=>{
+  const star=document.createElement("div");
+  star.className="shooting-star";
+  star.style.left=Math.random()*100+"vw";
+  star.style.top=Math.random()*40+"vh";
+  document.body.appendChild(star);
+  setTimeout(()=>star.remove(),1200);
+},5000);
+
+function typeWriter(){
+  if(index<message.length){
+    document.getElementById("typedText").innerHTML+=message.charAt(index);
+    index++;
+    setTimeout(typeWriter,50);
+  }
+}
+
+function openEnvelope(){
+  const env=document.getElementById("envelope");
+  const flash=document.getElementById("flash");
+  const container=document.querySelector(".container");
+
+  container.classList.add("hide");
+  document.getElementById("typedText").innerHTML="";
+  index=0;
+
+  setTimeout(()=>{
+    env.classList.add("show");
+
+    setTimeout(()=>{
+      flash.classList.add("active");
+      env.classList.add("open");
+      typeWriter();
+
+      /* 🎬 เพลง fade in */
+      const player=document.getElementById("ytplayer");
+
+
+      player.src=
+      "https://www.youtube.com/embed/EBJf0slhj5A?si=4P27keLAmYvLjNPY&amp;start=112&mute=0&autoplay=1&loop=1&playlist=EBJf0slhj5A";
+
+    },800);
+
+  },500);
+}
+</script>
+
+</body>
+</html>
